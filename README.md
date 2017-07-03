@@ -25,8 +25,8 @@ The input and output file formats are specified below. This software package inc
      - To compile, first need to include the blitz library: `/Third_Party/`. To avoid the deprecation warnings, add `_CRT_SECURE_NO_WARNINGS` and `_SCL_SECURE_NO_WARNINGS` to the compile options, which can be set in Project Properties -> C/C++ -> Preprocessor -> Preprocessor Definitions.
 
 2. **Linux/macOS**:
- - This code has been tested on GCC version 4.8.4, and any version greater than this should also work.
- - To compile, just use the `Makefile` provided.
+     - This code has been tested on GCC version 4.8.4, and any version greater than this should also work.
+     - To compile, just use the `Makefile` provided.
 
 
 # Usage: #
@@ -45,22 +45,22 @@ If no options are offered, the program will not run the cycle optimization algor
 For the input data, currently there are three file types that are supported.
 
 1. d-dimensional gray-scale image data (interpreted as cubical complex). A simple Matlab file writer is provided in this software package `/Matlab/Save_Cubical_Image.m`
- - **File type**, which is `0` for cubical complex data.
- - **Data dimension**, which is followed by the exact size in each dimension. For example, for a `2D` image of size `400x400`, we have `2 400 400`.
- - **Pixel values**.
+     - **File type**, which is `0` for cubical complex data.
+     - **Data dimension**, which is followed by the exact size in each dimension. For example, for a `2D` image of size `400x400`, we have `2 400 400`.
+     - **Pixel values**.
 2. Vietoris-Rips complex. A simple Matlab file writer and demo can be found in `/Matlab/Save_Dense_Distance_Matrix.m` and `/Matlab/Demo_Full_Rips.m`.
- - **File type**, which is `1` for dense distance matrix data.
- - **Total number of points**.
- - **The dimension of each point**. For instance, for points in `3D` space, this number should be `3`.
- - **The positions of points**.
- - **Dense distance matrix**.
+     - **File type**, which is `1` for dense distance matrix data.
+     - **Total number of points**.
+     - **The dimension of each point**. For instance, for points in `3D` space, this number should be `3`.
+     - **The positions of points**.
+     - **Dense distance matrix**.
 3. Simplicial complex. A simple Matlab file writer and demo are provided in `/Matlab/Save_General_Simplicial_Complex.m` and `/Matlab/Demo_General_Simplicial_Complex.m`.
- - **File type**, which is `2` for simplicial complex.
- - **Maximum dimension of simplicial complex**.
- - **Total number of vertices**.
- - **The dimension of each vertex**.
- - **Positions of vertices and their corresponding filtration values**.
- - **Write indices of edges, faces, etc ...**, just like adjacency matrix.
+     - **File type**, which is `2` for simplicial complex.
+     - **Maximum dimension of simplicial complex**.
+     - **Total number of vertices**.
+     - **The dimension of each vertex**.
+     - **Positions of vertices and their corresponding filtration values**.
+     - **Write indices of edges, faces, etc ...**, just like adjacency matrix.
 
 For the output, there are also three different kinds of file types: `.pers`, `.red` and `.bnd`. `.pers` stores the information of birth time and death time for each homology class, while `.red` and `.bnd` store the reduction process and the reduced boundary matrix, respectively. The number appended to the file extension `.bnd` indicates the dimension of the reduced boundary matrix, and this is similar for `.red`. For example, `file_name.bnd.1` is for `1D` reduced boundary matrix. The corresponding file readers are implemented in `/Matlab/Read_Pers_Results_Cubical.m`, `/Matlab/Read_Pers_Results_FullRips.m` and `/Matlab/Read_Pers_Results_General_SimComplex.m`.
 
@@ -74,7 +74,7 @@ For the output, there are also three different kinds of file types: `.pers`, `.r
 - Parallelize the computation of edge annotations.
 
 # License and Disclaimer: #
-----------
+
 Currently released under GPLv3 ([https://www.gnu.org/licenses/gpl.html](https://www.gnu.org/licenses/gpl.html "https://www.gnu.org/licenses/gpl.html")).
 
 *The SOFTWARE PACKAGE provided in this page is provided "as is", without any guarantee made as to its suitability or fitness for any particular use. It may contain bugs, so use of this tool is at your own risk. We take no responsibility for any damage of any sort that may unintentionally be caused through its use.*
