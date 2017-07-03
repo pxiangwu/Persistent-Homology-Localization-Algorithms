@@ -1,10 +1,8 @@
 # Persistent Homology Localization Algorithms #
 
-----------
 Copyright 2017 Rutgers University and CUNY Queens College
 
 # Description: #
-----------
 
 This page contains the code of persistent homology localization algorithm proposed in [1]. For a given homology class in a certain complex, this code computes the optimal (shortest) representative cycle.
 
@@ -19,7 +17,6 @@ The output produced by this software consists of the optimal representative cycl
 The input and output file formats are specified below. This software package includes Matlab functions to create the input files and interpret output results.
 
 # Setup: #
-----------
 
 1. **Windows**: 
 
@@ -34,8 +31,6 @@ The input and output file formats are specified below. This software package inc
 
 # Usage: #
 
-----------
-
 In command line, run: `HomologyLocalization -f data_file_name [options]`. Here, `data_file_name` is the name of input data, which can be simplicial complex, Vietoris-Rips complex or cubical complex. The available options are:
 
 - `-t` or `--threshold`: only homology classes with persistence greater than this threshold parameter will be considered for the computation of optimal cycles.
@@ -47,7 +42,6 @@ If no options are offered, the program will not run the cycle optimization algor
 
 # File Formats: #
 
-----------
 For the input data, currently there are three file types that are supported.
 
 1. d-dimensional gray-scale image data (interpreted as cubical complex). A simple Matlab file writer is provided in this software package `/Matlab/Save_Cubical_Image.m`
@@ -72,15 +66,10 @@ For the output, there are also three different kinds of file types: `.pers`, `.r
 
 # Examples: #
 
-----------
-
-
 - Command `HomologyLocalization -f filename.dat -a 1 -t 100` will compute the optimal cycles for homology class with persistence greater than 100, using classical exhaustive search.
 - Command `HomologyLocalization -f filename.dat` just performs the column-wise Gaussian reduction for the boundary matrix, and returns the possibly non-optimal cycles.
 
 # TODO: #
-
-----------
 
 - Parallelize the computation of edge annotations.
 
@@ -92,7 +81,6 @@ Currently released under GPLv3 ([https://www.gnu.org/licenses/gpl.html](https://
 
 # Citation #
 
-----------
 If you find this code helpful, please cite our work [1] with the following bibtex:
 
     @inproceedings{ipmi/WuCWZYQMA17,
@@ -112,11 +100,9 @@ If you find this code helpful, please cite our work [1] with the following bibte
 
 # Contacts: #
 
-----------
 If you have any questions regarding this code, please contact Pengxiang Wu (_pxiangwu@gmail.com_), or just leave a message below with Github (log-in is needed).
 
 # References: #
 
-----------
 [1] P. Wu, C. Chen, Y. Wang, S. Zhang, C. Yuan, Z. Qian, D. Metaxas and L. Axel. "Optimal Topological Cycles and Their Application in Cardiac Trabeculae Restoration." In *International Conference on Information Processing in Medical Imaging (IPMI)*, 2017.
 
