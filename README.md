@@ -20,9 +20,9 @@ The input and output file formats are specified below. This software package inc
 
 1. **Windows**: 
 
- - This code has been tested on Visual Studio 2015. Since features of C++11 are utilized in this code, older C++ compilers are not supported (e.g., Visual Studio 2013 will not compile successfully).
+     - This code has been tested on Visual Studio 2015. Since features of C++11 are utilized in this code, older C++ compilers are not supported (e.g., Visual Studio 2013 will not compile successfully).
 
- - To compile, first need to include the blitz library: `/Third_Party/`. To avoid the deprecation warnings, add `_CRT_SECURE_NO_WARNINGS` and `_SCL_SECURE_NO_WARNINGS` to the compiler options, which can be set in Project Properties -> C/C++ -> Preprocessor -> Preprocessor Definitions.
+     - To compile, first need to include the blitz library: `/Third_Party/`. To avoid the deprecation warnings, add `_CRT_SECURE_NO_WARNINGS` and `_SCL_SECURE_NO_WARNINGS` to the compile options, which can be set in Project Properties -> C/C++ -> Preprocessor -> Preprocessor Definitions.
 
 2. **Linux/macOS**:
  - This code has been tested on GCC version 4.8.4, and any version greater than this should also work.
