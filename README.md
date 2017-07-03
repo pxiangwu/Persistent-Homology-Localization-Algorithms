@@ -2,7 +2,7 @@
 
 Copyright 2017 Rutgers University and CUNY Queens College
 
-# Description: #
+## Description: ##
 
 This page contains the code of persistent homology localization algorithm proposed in [1]. For a given homology class in a certain complex, this code computes the optimal (shortest) representative cycle.
 
@@ -16,7 +16,7 @@ The output produced by this software consists of the optimal representative cycl
 
 The input and output file formats are specified below. This software package includes Matlab functions to create the input files and interpret output results.
 
-# Setup: #
+## Setup: ##
 
 1. **Windows**: 
 
@@ -29,7 +29,7 @@ The input and output file formats are specified below. This software package inc
      - To compile, just use the `Makefile` provided.
 
 
-# Usage: #
+## Usage: ##
 
 In command line, run: `HomologyLocalization -f data_file_name [options]`. Here, `data_file_name` is the name of input data, which can be simplicial complex, Vietoris-Rips complex or cubical complex. The available options are:
 
@@ -40,7 +40,7 @@ In command line, run: `HomologyLocalization -f data_file_name [options]`. Here, 
 
 If no options are offered, the program will not run the cycle optimization algorithm and will only naively reduce the boundary matrix. As a result, it just returns the possibly non-optimal cycles.
 
-# File Formats: #
+## File Formats: ##
 
 For the input data, currently there are three file types that are supported.
 
@@ -64,22 +64,22 @@ For the input data, currently there are three file types that are supported.
 
 For the output, there are also three different kinds of file types: `.pers`, `.red` and `.bnd`. `.pers` stores the information of birth time and death time for each homology class, while `.red` and `.bnd` store the reduction process and the reduced boundary matrix, respectively. The number appended to the file extension `.bnd` indicates the dimension of the reduced boundary matrix, and this is similar for `.red`. For example, `file_name.bnd.1` is for `1D` reduced boundary matrix. The corresponding file readers are implemented in `/Matlab/Read_Pers_Results_Cubical.m`, `/Matlab/Read_Pers_Results_FullRips.m` and `/Matlab/Read_Pers_Results_General_SimComplex.m`.
 
-# Examples: #
+## Examples: ##
 
 - Command `HomologyLocalization -f filename.dat -a 1 -t 100` will compute the optimal cycles for homology class with persistence greater than 100, using classical exhaustive search.
 - Command `HomologyLocalization -f filename.dat` just performs the column-wise Gaussian reduction for the boundary matrix, and returns the possibly non-optimal cycles.
 
-# TODO: #
+## TODO: ##
 
 - Parallelize the computation of edge annotations.
 
-# License and Disclaimer: #
+## License and Disclaimer: ##
 
 Currently released under GPLv3 ([https://www.gnu.org/licenses/gpl.html](https://www.gnu.org/licenses/gpl.html "https://www.gnu.org/licenses/gpl.html")).
 
 *The SOFTWARE PACKAGE provided in this page is provided "as is", without any guarantee made as to its suitability or fitness for any particular use. It may contain bugs, so use of this tool is at your own risk. We take no responsibility for any damage of any sort that may unintentionally be caused through its use.*
 
-# Citation #
+## Citation ##
 
 If you find this code helpful, please cite our work [1] with the following bibtex:
 
@@ -98,11 +98,11 @@ If you find this code helpful, please cite our work [1] with the following bibte
   		year = {2017}
 	}
 
-# Contacts: #
+## Contacts: ##
 
 If you have any questions regarding this code, please contact Pengxiang Wu (_pxiangwu@gmail.com_), or just leave a message below with Github (log-in is needed).
 
-# References: #
+## References: ##
 
 [1] P. Wu, C. Chen, Y. Wang, S. Zhang, C. Yuan, Z. Qian, D. Metaxas and L. Axel. "Optimal Topological Cycles and Their Application in Cardiac Trabeculae Restoration." In *International Conference on Information Processing in Medical Imaging (IPMI)*, 2017.
 
