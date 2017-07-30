@@ -25,8 +25,10 @@ The input and output file formats are specified below. This software package inc
      - To compile, first need to include the blitz library: `/Third_Party/`. To avoid the deprecation warnings, add `_CRT_SECURE_NO_WARNINGS` and `_SCL_SECURE_NO_WARNINGS` to the compile options, which can be set in Project Properties -> C/C++ -> Preprocessor -> Preprocessor Definitions.
 
 2. **Linux/macOS**:
-     - This code has been tested on GCC version 4.8.4, and any version greater than this should also work.
+     - This code has been tested on G++ version 4.8.4, and any version after G++ 4.7 should also work. Note that versions prior to G++ 4.7 will fail to compile since c++11 is better supported after G++ 4.7. To install latest gcc/g++ compiler on Ubuntu, please follow the tutorial: [How to install latest gcc on Ubuntu LTS](https://gist.github.com/application2000/73fd6f4bf1be6600a2cf9f56315a2d91 "How to install latest gcc on Ubuntu LTS (12.04, 14.04, 16.04)").
      - To compile, just use the `Makefile` provided.
+
+To ease the pain of compiling the codes, precompiled executables are also provided in  directory `/Executables/`. For Windows executables, they were generated on Windows 8.1. For Linux executable, it was generated on Ubuntu 14.04.
 
 
 ## Usage: ##
