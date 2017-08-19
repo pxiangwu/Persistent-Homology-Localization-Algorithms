@@ -9,36 +9,13 @@
 #include <fstream>
 #include <ctime>
 
-#include "PersistenceIO.h"
-#include "DijkstraShortestPath.h"
-#include "AnnotatingEdges.h"
-#include "BitSet.h"
-
-#include "External/Mem_usage.h"
-
-// structure of covering graph node
-struct cgNode
-{
-	cgNode() {}
-
-	cgNode(int BettiNum)
-	{
-		sumAnnotation = BitSet(BettiNum);
-		sumAnnotationP = BitSet(BettiNum);
-	}
-
-	bool operator < (const cgNode & rhs) const
-	{
-		return fScore > rhs.fScore; // min heap
-	}
-
-	int vertex = -1;								// the vertex index
-	int fScore = 0;								// fScore = the length of walked path + the length of estimated remaining path
-	int gScore = 0;								// the length of walked path;
-	BitSet sumAnnotation;					// sum of annotations of encountered edges when searching along some path
-	BitSet sumAnnotationP;					// sum of annotations in the perturbed covering graph
-	vector<pair<int, int>> previous;		// used for backtracing the shortest path
-};
+#include "../PersistenceIO.h"
+#include "../Algorithms/DijkstraShortestPath.h"
+#include "../Algorithms/AnnotatingEdges.h"
+#include "../BitSet.h"
+#include "../Globals.h"
+#include "../External/Mem_usage.h"
+#include "../PriorityQueue.h"
 
 
 /********************************************************************
@@ -91,7 +68,7 @@ void backtraceShortestCycle(int source, int target, const vector<pair<int, int>>
 						its shortest representative cycle.
 * Parameters:
 * - inputCycle:				the input homology class
-* - cell2v_list:				a converter which projects cells to their corresponding consituent vertices
+* - cell2v_list:				a converter which projects cells to their corresponding constituent vertices
 * - edgeAnnotations:		the annotations for all sentinel edges
 * - edgeMap:					a map, mapping two endpoints to an edge
 * - vertexNum:				the number of vertices in the whole topological space
@@ -143,7 +120,7 @@ void AStar_Optimal_Cycle(const MatrixListType & inputCycle, const vector<MatrixL
 	cgNode sourceNode(BettiNum);
 	sourceNode.vertex = source;
 
-	std::priority_queue<cgNode> searchQ; // priority queue for A* algorithm
+	priorityQueue searchQ; // priority queue for A* algorithm
 	searchQ.push(sourceNode);
 
 	map<pair<int, BitSet>, int> computedHeuristics; // given a vertex, we store its already computed shortest path to the target for future usage
@@ -153,6 +130,7 @@ void AStar_Optimal_Cycle(const MatrixListType & inputCycle, const vector<MatrixL
 
 	int cntExpanedNode = 0; // count the number of expaned nodes
 	bool isVisited = false;
+	bool isInOpenSet = false;
 	int lenHeuristicPath = 0;
 	BitSet uvTargetAnnotation(BettiNum);
 	pair<int, BitSet> keyH(-1, BitSet(BettiNum)); // search key for heuristics in computedHeuristics
@@ -225,6 +203,7 @@ void AStar_Optimal_Cycle(const MatrixListType & inputCycle, const vector<MatrixL
 
 
 			// -- insert it into priority queue
+			// -- first, check if it is in close set
 			isVisited = false;
 			ret = hasVisited.equal_range(neighborNode.vertex);
 			for (multimap<int, BitSet>::iterator mapIt = ret.first; mapIt != ret.second; ++mapIt)
@@ -235,7 +214,13 @@ void AStar_Optimal_Cycle(const MatrixListType & inputCycle, const vector<MatrixL
 					break;
 				}
 			}
-			if (isVisited == false) // we have not expanded this node before
+			if (isVisited == true) // we have not expanded this node before
+				continue;
+
+			// -- next, check if it is in open set
+			isInOpenSet = false;
+			isInOpenSet = searchQ.updateNodeInQueue(neighborNode);
+			if (isInOpenSet == false) // this neighbor node is not in open set, so add it
 				searchQ.push(neighborNode);
 		}
 	}// end for
@@ -260,7 +245,7 @@ void AStar_Optimal_Cycle(const MatrixListType & inputCycle, const vector<MatrixL
 									than that of lowerCellList by 1
 * - boundaryMatrix			the input boundary matrix, which will updated as the computed results
 * - edgeMap:					a map, mapping two endpoints to an edge
-* - cell2v_list:				a converter which projects cells to their corresponding consituent vertices
+* - cell2v_list:				a converter which projects cells to their corresponding constituent vertices
 * - vertexNum:				the number of vertices in the whole topological space
 * - low_array:				an array storing the pivot information
 ********************************************************************/
