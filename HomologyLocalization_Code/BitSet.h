@@ -35,6 +35,12 @@ public:
 	{
 		if (mAllocatedSize != 0) 
 		{
+			if (mBits != nullptr)  // if not null, first release it
+			{
+				free(mBits);
+				mBits = nullptr;
+			}
+
 			mBits = (unsigned char *)malloc(mAllocatedSize);
 			memcpy(mBits, rhs.mBits, mAllocatedSize);
 		}
@@ -51,6 +57,12 @@ public:
 			mAllocatedSize = ((bitCount - 1) >> 3) + 1;
 			mBitsize = bitCount;
 
+			if (mBits != nullptr)  // if not null, first release it
+			{
+				free(mBits);
+				mBits = nullptr;
+			}
+
 			mBits = (unsigned char *)malloc(mAllocatedSize);
 			memcpy(mBits, rhs.mBits, mAllocatedSize);
 
@@ -65,6 +77,13 @@ public:
 		if (this != &rhs) {
 			mAllocatedSize = rhs.mAllocatedSize;
 			mBitsize = rhs.mBitsize;
+
+			if (mBits != nullptr)  // if not null, first release it
+			{
+				free(mBits);
+				mBits = nullptr;
+			}
+
 			mBits = (unsigned char *)malloc(mAllocatedSize);
 			memcpy(mBits, rhs.mBits, mAllocatedSize);
 		}
@@ -74,12 +93,36 @@ public:
 	BitSet(BitSet && rhs) 
 	{
 		if (this == &rhs) { return; }
+		if (mBits != nullptr)
+		{
+			free(mBits);
+			mBits = nullptr;
+		}
+
 		mAllocatedSize = rhs.mAllocatedSize;
 		mBits = rhs.mBits;
 		mBitsize = rhs.mBitsize;
 		rhs.mAllocatedSize = 0;
 		rhs.mBits = nullptr;
 		rhs.mBitsize = 0;
+	}
+
+	BitSet & operator = (BitSet && rhs) 
+	{
+		if (this == &rhs) { return  *this; }
+		if (mBits != nullptr)  // if not null, first release it
+		{
+			free(mBits);
+			mBits = nullptr;
+		}
+
+		mAllocatedSize = rhs.mAllocatedSize;
+		mBits = rhs.mBits;
+		mBitsize = rhs.mBitsize;
+		rhs.mAllocatedSize = 0;
+		rhs.mBits = nullptr;
+		rhs.mBitsize = 0;
+		return *this;
 	}
 
 	bool operator == (const BitSet & rhs) const
@@ -91,18 +134,6 @@ public:
 			return false;
 		else
 			return true;
-	}
-
-	BitSet & operator = (BitSet && rhs) 
-	{
-		if (this == &rhs) { return  *this; }
-		mAllocatedSize = rhs.mAllocatedSize;
-		mBits = rhs.mBits;
-		mBitsize = rhs.mBitsize;
-		rhs.mAllocatedSize = 0;
-		rhs.mBits = nullptr;
-		rhs.mBitsize = 0;
-		return *this;
 	}
 
 	// The following is about '<' and '>' operator
