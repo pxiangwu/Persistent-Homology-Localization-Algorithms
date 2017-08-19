@@ -2,6 +2,7 @@
 #define GLOBALS_H
 
 #include <climits>
+#include "BitSet.h"
 
 /**************************************************
 * This file contains all the global variable definitions and marcos, 
@@ -44,6 +45,39 @@ namespace Globals
 		GENERAL_SIMPLICIAL_COMPLEX = 2
 	};
 }
+
+
+// structure of covering graph node
+struct cgNode
+{
+	cgNode() {}
+
+	cgNode(int BettiNum)
+	{
+		sumAnnotation = BitSet(BettiNum);
+	}
+
+	bool operator < (const cgNode & rhs) const // min-heap, with tie-breaking
+	{
+		if (fScore > rhs.fScore)
+			return true;
+		else if (fScore < rhs.fScore)
+			return false;
+		else if (fScore == rhs.fScore)
+		{
+			if (gScore != rhs.gScore)
+				return gScore < rhs.gScore;
+			else
+				return true;
+		}
+	}
+
+	int vertex = -1;								// the vertex index
+	int fScore = 0;								// fScore = the length of walked path + the length of estimated remaining path
+	int gScore = 0;								// the length of walked path;
+	BitSet sumAnnotation;					// sum of annotations of encountered edges when searching along some path
+	vector<pair<int, int>> previous;		// used for backtracing the shortest path
+};
 
 
 #endif // !GLOBALS_H
