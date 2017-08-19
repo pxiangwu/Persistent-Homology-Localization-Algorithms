@@ -8,11 +8,11 @@
 #include <queue>
 #include <random>
 
-#include "PersistenceIO.h"
-#include "DijkstraShortestPath.h"
-#include "STLUtils.h"
-#include "BitSet.h" // data structure for handling binary annotation
-#include "Globals.h"
+#include "../PersistenceIO.h"
+#include "../Algorithms/DijkstraShortestPath.h"
+#include "../STLUtils.h"
+#include "../BitSet.h" // data structure for handling binary annotation
+#include "../Globals.h"
  
 
 /********************************************************************
@@ -255,7 +255,7 @@ double computePersistence(blitz::Array<double, arrayDim> * phi, const vector<bli
 * - redBoundary:			reduced boundary matrix
 * - edgeMap:					a map, mapping two endpoints to an edge
 * - low_array:				an array storing the pivot information
-* - cell2v_list:				a converter which projects cells to their corresponding consituent vertices
+* - cell2v_list:				a converter which projects cells to their corresponding constituent vertices
 * - death:						the given death time, which is a number from filtrationOrder
 * - vertexNum:				the number of vertices in the whole topological space
 * - resEdgeAnnotations:	the result edge annotations
@@ -325,7 +325,7 @@ void computeAnnotations(const vector<MatrixListType> & redBoundary, const map<pa
 * Description:	Given a cycle, this function computes its annotation
 * Parameters:
 * - inputCycle:				the input cycle
-* - cell2v_list:				a converter which projects cells to their corresponding consituent vertices
+* - cell2v_list:				a converter which projects cells to their corresponding constituent vertices
 * - edgeAnnotations:		the annotations for all sentinel edges
 * - resAnnotation:			the result cycle annotation
 ********************************************************************/
@@ -364,7 +364,7 @@ void computeCycleAnnotation(const MatrixListType & inputCycle, const vector<Matr
 						define the edge set of original graph.
 * Parameters:
 * - edgeAnnotations:		the input edge annotations
-* - cell2v_list:				a converter which projects cells to their corresponding consituent vertices
+* - cell2v_list:				a converter which projects cells to their corresponding constituent vertices
 * - low:							the low index of a homology class
 * - entryIdx:					the entry index
 * - vertexNum:				the number of vertices
