@@ -2,7 +2,7 @@
 #define INCLUDED_REDUCTION_H
 
 #include <stdexcept>
-#include "Globals.h"
+#include "../Globals.h"
 
 /*********************************************************************
 * This function reduces a boundary matrix represented by its 'low_array'.
