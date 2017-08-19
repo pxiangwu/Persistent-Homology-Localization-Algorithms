@@ -7,15 +7,15 @@
 #include <fstream>
 #include <ctime>
 
-#include "Filtration/CubicalFiltration.h"
-#include "PersistenceIO.h"
-#include "DijkstraShortestPath.h"
+#include "../Filtration/CubicalFiltration.h"
+#include "../PersistenceIO.h"
+#include "../Algorithms/DijkstraShortestPath.h"
 #include "AnnotatingEdges.h"
-#include "BitSet.h"
+#include "../BitSet.h"
 #include "AStar.h"
-#include "Globals.h"
+#include "../Globals.h"
 
-#include "External/Mem_usage.h"
+#include "../External/Mem_usage.h"
 
 
 // convert annotation to integer
