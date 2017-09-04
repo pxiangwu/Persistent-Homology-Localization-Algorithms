@@ -38,7 +38,7 @@ In command line, run: `HomologyLocalization -f data_file_name [options]`. Here, 
 - `-t` or `--threshold`: only homology classes with persistence greater than this threshold parameter will be considered for the computation of optimal cycles.
 - `-a` or `--algorithm`: specify which algorithm to employ to find the optimal representative cycles. Currently there are two options: 0, A* search; 1, classical exhaustive search on the whole covering graph. For instance, the following command `HomologyLocalization -f data_file_name -a 0` will apply the A* search algorithm.
 - `-d` or `--dimension`: specify the maximum dimension to be considered for computation. For example, by default `d=2`, and this means we will only compute the `1d` and `2d` boundary matrices. Since this code is based on `blitz` library and the C++ template does not allow dynamic compilation, this software only supports maximum dimension of `8`. To adapt it to different needs, just change one line of code in function `runPersistenceHomology` from `InputRunner.h`.
-- `-p` or `--pthread`: specify the number of threads for the computation of edge annotations. By default, it is 10.
+- `-p` or `--pthread`: specify the number of threads for the computation of edge annotations. By default, it is 8.
 - `-h` or `--help`: show help information.
 
 If no options are offered, the program will not run the cycle optimization algorithm and will only naively reduce the boundary matrix. As a result, it just returns the possibly non-optimal cycles.
