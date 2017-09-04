@@ -7,6 +7,8 @@
 #include <stack>
 #include <queue>
 #include <random>
+#include <unordered_map>
+#include <unordered_set>
 
 #include "../PersistenceIO.h"
 #include "../Algorithms/DijkstraShortestPath.h"
@@ -419,6 +421,62 @@ void constructCoveringGraph1D(const map<pair<int, int>, BitSet> & edgeAnnotation
 
 
 /********************************************************************
+* Description:	Apply backward BFS on unweighted graph to find the length of shortest path
+						between two vertices. During this process, we also record the distance from
+						other vertices to the target, which will be used for building heuristic database.
+* Parameters:
+* - source:						the 'target' vertex in original graph
+* - target:						the 'source' vertex in original graph
+* - coveringGraph:			the input covering graph
+* - heuristic_database:	the heuristic database
+********************************************************************/
+int BFS_Shortest_Path_Length(int source, int target, const adjacency_list_t & coveringGraph,
+	unordered_map<int, int> & heuristic_database)
+{
+	// first, check if the distance from source to target has been computed before
+	unordered_map<int, int>::const_iterator hash_it;
+	hash_it = heuristic_database.find(target);
+	if (hash_it != heuristic_database.end())
+		return hash_it->second;
+
+	// otherwise, we need to do BFS to find the path length
+	int vertexNum = coveringGraph.size();
+
+	unordered_set<int> hasVisited;
+	queue<int> searchQ;
+
+	searchQ.push(source); // backward BFS
+	hasVisited.insert(source);
+	heuristic_database[source] = 0;
+
+	int currNode, neighborNode;
+	int pathLen = -1;
+
+	while (true)
+	{
+		currNode = searchQ.front();
+		searchQ.pop();
+		pathLen = heuristic_database.at(currNode);
+
+		if (currNode == target)
+			return pathLen;
+
+		// visit its neighbors
+		const std::vector<neighbor> & neighbors = coveringGraph[currNode];
+		for (const auto & nb : neighbors)
+		{
+			if (hasVisited.find(nb.target) != hasVisited.end())
+				continue;
+
+			hasVisited.insert(nb.target);
+			searchQ.push(nb.target);
+			heuristic_database[nb.target] = pathLen + 1;
+		}
+	}
+}
+
+
+/********************************************************************
 * Description:	Given source and target, compute the length of shortest path between them.
 						This shortest path should have the same annotation as target annotation.
 * Parameters:
@@ -428,55 +486,29 @@ void constructCoveringGraph1D(const map<pair<int, int>, BitSet> & edgeAnnotation
 * - target:						the given target
 * - BettiNum:					the Betti number
 * - vertexNum:				the number of vertices
+* - heuristic_database:	heuristic database
 ********************************************************************/
 int computeHeuristic(const vector<adjacency_list_t> & coveringGraphs, const BitSet & targetAnnotation,
-	int source, int target, int BettiNum, int vertexNum)
+	int source, int target, int BettiNum, int vertexNum, vector<unordered_map<int, int>> & heuristic_database)
 {
 	assert(coveringGraphs.size() == BettiNum);
 
 	int currH, maxH = -1;
-	int u = source, v;
+	int u = target, v; // backward search from target to source
 
 	for (int i = 0; i < BettiNum; i++)
 	{
 		if (targetAnnotation.checkBit(i) == false) // compute the path with even number of edges from Ei
-			v = target;
+			v = source;
 		else
-			v = target + vertexNum;
+			v = source + vertexNum;
 
-		currH = DijkstraComputePaths(u, v, coveringGraphs[i]);
+		currH = BFS_Shortest_Path_Length(u, v, coveringGraphs[i], heuristic_database[i]);
 		if (maxH < currH)
 			maxH = currH;
 	}
 
 	return maxH;
-}
-
-
-/********************************************************************
-* Description:	Given source and target, compute tight heuristic value
-* Parameters:
-* - coveringGraphs:		a vector containing different 1d covering graphs
-* - coveringGraphsP:		the perturbed 1d covering graphs
-* - targetAnnotation:		target annotation from source to target
-* - targetAnnotationP:	perturbed target annotation from source to target
-* - source:						the given source
-* - target:						the given target
-* - BettiNum:					the Betti number
-* - vertexNum:				the number of vertices
-********************************************************************/
-int computeTightHeuristic(const vector<adjacency_list_t> & coveringGraphs, const vector<adjacency_list_t> & coveringGraphsP,
-	const BitSet & targetAnnotation, const BitSet & targetAnnotationP, int source, int target, int BettiNum, int vertexNum)
-{
-	int H1, H2;
-
-	H1 = computeHeuristic(coveringGraphs, targetAnnotation, source, target, BettiNum, vertexNum);
-	H2 = computeHeuristic(coveringGraphsP, targetAnnotationP, source, target, BettiNum, vertexNum);
-
-	if (H1 > H2)
-		return H1;
-	else
-		return H2;
 }
 
 #endif
