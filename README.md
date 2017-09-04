@@ -25,7 +25,7 @@ The input and output file formats are specified below. This software package inc
      - To compile, first need to include the blitz library: `/Third_Party/`. To avoid the deprecation warnings, add `_CRT_SECURE_NO_WARNINGS` and `_SCL_SECURE_NO_WARNINGS` to the compile options, which can be set in Project Properties -> C/C++ -> Preprocessor -> Preprocessor Definitions.
 
 2. **Linux/macOS**:
-     - This code has been tested on G++ version 4.8.4, and any version after G++ 4.7 should also work. Note that versions prior to G++ 4.7 will fail to compile since c++11 is better supported after G++ 4.7. To install latest gcc/g++ compiler on Ubuntu, please follow the tutorial: [How to install latest gcc on Ubuntu LTS](https://gist.github.com/application2000/73fd6f4bf1be6600a2cf9f56315a2d91 "How to install latest gcc on Ubuntu LTS (12.04, 14.04, 16.04)").
+     - This code has been tested on G++ version 4.8.4, and any version after G++ 4.8.1 should also work (since GCC 4.8.1 has a complete concurrency support). To install latest gcc/g++ compiler on Ubuntu, please follow the tutorial: [How to install latest gcc on Ubuntu LTS](https://gist.github.com/application2000/73fd6f4bf1be6600a2cf9f56315a2d91 "How to install latest gcc on Ubuntu LTS (12.04, 14.04, 16.04)").
      - To compile, just use the `Makefile` provided.
 
 To ease the pain of compiling the codes, precompiled executables are also provided in  the release branch. For Windows executables, they were generated on Windows 8.1. For Linux executable, it was generated on Ubuntu 14.04.
@@ -38,6 +38,7 @@ In command line, run: `HomologyLocalization -f data_file_name [options]`. Here, 
 - `-t` or `--threshold`: only homology classes with persistence greater than this threshold parameter will be considered for the computation of optimal cycles.
 - `-a` or `--algorithm`: specify which algorithm to employ to find the optimal representative cycles. Currently there are two options: 0, A* search; 1, classical exhaustive search on the whole covering graph. For instance, the following command `HomologyLocalization -f data_file_name -a 0` will apply the A* search algorithm.
 - `-d` or `--dimension`: specify the maximum dimension to be considered for computation. For example, by default `d=2`, and this means we will only compute the `1d` and `2d` boundary matrices. Since this code is based on `blitz` library and the C++ template does not allow dynamic compilation, this software only supports maximum dimension of `8`. To adapt it to different needs, just change one line of code in function `runPersistenceHomology` from `InputRunner.h`.
+- `-p` or `--pthread`: specify the number of threads for the computation of edge annotations. By default, it is 10.
 - `-h` or `--help`: show help information.
 
 If no options are offered, the program will not run the cycle optimization algorithm and will only naively reduce the boundary matrix. As a result, it just returns the possibly non-optimal cycles.
@@ -73,7 +74,7 @@ For the output, there are also three different kinds of file types: `.pers`, `.r
 
 ## TODO: ##
 
-- Parallelize the computation of edge annotations.
+- Fine-grained parallelism for the computation of edge annotations.
 
 ## License and Disclaimer: ##
 
