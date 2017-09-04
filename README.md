@@ -4,7 +4,7 @@ Copyright 2017 Rutgers University and CUNY Queens College
 
 ## Description: ##
 
-This page contains the code of persistent homology localization algorithm proposed in [1]. For a given homology class in a certain complex, this code computes the optimal (shortest) representative cycle.
+This page contains the code of persistent homology localization algorithm proposed in [1]. For a given homology class in a certain complex, this code computes the optimal (shortest) representative cycle. Here the shortest cycle refers to the cycle with least amount of edges on unweighted complex. Extension to weighted complex is straightforward.
 
 Currently, there are three types of input data that are supported by this software package:
 
