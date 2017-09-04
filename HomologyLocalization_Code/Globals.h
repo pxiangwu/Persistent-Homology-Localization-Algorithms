@@ -73,10 +73,27 @@ struct cgNode
 	}
 
 	int vertex = -1;								// the vertex index
-	int fScore = 0;								// fScore = the length of walked path + the length of estimated remaining path
-	int gScore = 0;								// the length of walked path;
+	double fScore = 0.0;						// fScore = the length of walked path + the length of estimated remaining path
+	double gScore = 0.0;						// the length of walked path;
 	BitSet sumAnnotation;					// sum of annotations of encountered edges when searching along some path
 	vector<pair<int, int>> previous;		// used for backtracing the shortest path
+};
+
+
+// Hasher for pair<int, BitSet>
+struct KeyHasher
+{
+	std::size_t operator () (const std::pair<int, BitSet> & key) const
+	{
+		size_t res = 17;
+		int first = key.first;
+		int second = key.second.convertBitsToInt();
+
+		res = res * 31 + hash<int>()(first);
+		res = res * 31 + hash<int>()(second);
+
+		return res;
+	}
 };
 
 
