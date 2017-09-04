@@ -103,7 +103,7 @@ If you find this code helpful, please cite our work [1] with the following bibte
 
 ## Contacts: ##
 
-If you have any questions regarding this code, please contact Pengxiang Wu (_pxiangwu@gmail.com_), or just leave a message below with Github (log-in is needed).
+If you have any questions regarding this code, please contact Pengxiang Wu (_pxiangwu@gmail.com_), or just leave a message below with Github (log-in is needed). Bug reports are quite welcome.
 
 ## References: ##
 
