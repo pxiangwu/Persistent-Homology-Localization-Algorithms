@@ -302,6 +302,15 @@ public:
 		return out;
 	}
 
+	// Convert bits to integer
+	int convertBitsToInt() const
+	{
+		int sum = 0;
+		for (int i = 0; i < mAllocatedSize; ++i)
+			sum += int(mBits[i]);
+		return sum;
+	}
+
 private:
 	unsigned char* mBits = nullptr; // The array storing the bits
 	
