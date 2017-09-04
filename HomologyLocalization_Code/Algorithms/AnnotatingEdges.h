@@ -9,6 +9,8 @@
 #include <random>
 #include <unordered_map>
 #include <unordered_set>
+#include <thread>
+#include <mutex>
 
 #include "../PersistenceIO.h"
 #include "../Algorithms/DijkstraShortestPath.h"
@@ -16,6 +18,9 @@
 #include "../BitSet.h" // data structure for handling binary annotation
 #include "../Globals.h"
  
+std::mutex thread_mutex;
+
+using namespace std;
 
 /********************************************************************
 * Description:	Given a graph, this function computes an arbitrary spanning tree
@@ -250,6 +255,51 @@ double computePersistence(blitz::Array<double, arrayDim> * phi, const vector<bli
 
 
 /********************************************************************
+* Description:	thread for computing annotation of a given sentinel edge
+* Parameters:
+* - sentinelEdges:			the set of sentinel edges
+* - spanningTree:			spanning tree
+* - other parameters are self-explanatory
+********************************************************************/
+void threadComputeAnnotation(const vector<pair<int, int>> & sentinelEdges,
+	const adjacency_list_t & spanningTree, const map<pair<int, int>, int> & edgeMap,
+	const vector<int> & low_array, int death, int bettiNum, const vector<MatrixListType> & redBoundary,
+	const map<int, int> & mapColorColumnIdx, map<pair<int, int>, BitSet> & resEdgeAnnotations)
+{
+	MatrixListType sentinelCycle;
+	BitSet annotation(bettiNum);
+	int low;
+
+	for (const auto & edge : sentinelEdges)
+	{
+		annotation.reset(); // reinitialized as zeros
+		sentinelCycle.clear();
+		computeSentinelCycle(spanningTree, edge, edgeMap, sentinelCycle);
+
+		// performe reduction on this sentinel cycle using all the colored columns, thereby obtaining the annotation.
+		while (!sentinelCycle.empty()) // we continue the reduction until it is empty
+		{
+			low = sentinelCycle.back();
+			assert(low_array[low] != Globals::BIG_INT);
+			sentinelCycle = list_sym_diff(sentinelCycle, redBoundary[low_array[low]]);
+
+			if (low_array[low] >= death)
+			{
+				int currentColumnIdx = mapColorColumnIdx.at(low_array[low]);
+				int deathColumnIdx = mapColorColumnIdx.at(death);
+				annotation.set(currentColumnIdx - deathColumnIdx); // set the corresponding bit to be 1 
+			}
+		}
+
+		// finally, construct the map which associates the edge with its annotation
+		thread_mutex.lock();
+		resEdgeAnnotations.insert({ std::make_pair(edge.first, edge.second), annotation });
+		thread_mutex.unlock();
+	}
+}
+
+
+/********************************************************************
 * Description:	For a certain birth time, compute all the annotations of the sentinel
 						edges. The computed annotations are stored in a std::map structure.
 						We use bit vector to operate the annotation.
@@ -296,30 +346,30 @@ void computeAnnotations(const vector<MatrixListType> & redBoundary, const map<pa
 	map<int, int> mapColorColumnIdx;
 	int bettiNum = computeBettiNumber(redBoundary, redBoundary[death].back(), death, mapColorColumnIdx);
 	BitSet annotation(bettiNum); // annotation, organized with bit vector
-	for (const auto & edge : sentinelEdges)
+
+	// dispatch tasks to workers
+	int num_workers = Globals::num_threads;
+	vector<vector<pair<int, int>>> batch_sentinelEdges;
+	int batch_size = sentinelEdges.size() / num_workers;
+	for (int i = 0; i < num_workers - 1; i++)
 	{
-		annotation.reset(); // reinitialized as zeros
-		sentinelCycle.clear();
-		computeSentinelCycle(spanningTree, edge, edgeMap, sentinelCycle);
-
-		// performe reduction on this sentinel cycle using all the colored columns, thereby obtaining the annotation.
-		while (!sentinelCycle.empty()) // we continue the reduction until it is empty
-		{
-			low = sentinelCycle.back();
-			assert(low_array[low] != Globals::BIG_INT);
-			sentinelCycle = list_sym_diff(sentinelCycle, redBoundary[low_array[low]]);
-
-			if (low_array[low] >= death)
-			{
-				int currentColumnIdx = mapColorColumnIdx[ low_array[low] ];
-				int deathColumnIdx = mapColorColumnIdx[death];
-				annotation.set(currentColumnIdx - deathColumnIdx); // set the corresponding bit to be 1 
-			}
-		}
-
-		// finally, construct the map which associates the edge with its annotation
-		resEdgeAnnotations.insert({std::make_pair(edge.first, edge.second), annotation});
+		batch_sentinelEdges.push_back(vector<pair<int, int>>());
+		std::copy(sentinelEdges.begin() + i * batch_size, sentinelEdges.begin() + (i + 1)*batch_size, std::back_inserter(batch_sentinelEdges[i]));
 	}
+	batch_sentinelEdges.push_back(vector<pair<int, int>>());
+	std::copy(sentinelEdges.begin() + (num_workers - 1) * batch_size, sentinelEdges.end(), std::back_inserter(batch_sentinelEdges[num_workers - 1]));
+
+	// creat workers
+	std::vector<std::thread> threadList;
+	for (int i = 0; i < num_workers; i++)
+	{
+		threadList.push_back(std::thread(threadComputeAnnotation, ref(batch_sentinelEdges[i]),
+			ref(spanningTree), ref(edgeMap), ref(low_array), death, bettiNum, ref(redBoundary), ref(mapColorColumnIdx),
+			ref(resEdgeAnnotations)));
+	}
+
+	// wait workers to finish
+	std::for_each(threadList.begin(), threadList.end(), std::mem_fn(&std::thread::join));
 }
 
 
