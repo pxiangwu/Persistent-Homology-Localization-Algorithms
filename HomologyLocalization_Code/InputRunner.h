@@ -11,7 +11,7 @@
 template<int dim>
 struct InputRunnerCubical
 {
-	static void run(const InputFileInfo &info, int pers_thd) 
+	static void run(const InputFileInfo &info, double pers_thd) 
 	{		
 		blitz::Array<double, dim> phi;
 		
@@ -34,7 +34,7 @@ struct InputRunnerCubical
 template<int maxDim>
 struct InputRunnerFullRips
 {
-	static void run(const InputFileInfo &info, int pers_thd)
+	static void run(const InputFileInfo &info, double pers_thd)
 	{
 		blitz::Array<double, 2> distMatrix;
 
@@ -57,7 +57,7 @@ struct InputRunnerFullRips
 template<int dim>
 struct InputRunnerSimComplex
 {
-	static void run(const InputFileInfo &info, int pers_thd)
+	static void run(const InputFileInfo &info, double pers_thd)
 	{
 		blitz::Array<double, 1> pointsVal;
 

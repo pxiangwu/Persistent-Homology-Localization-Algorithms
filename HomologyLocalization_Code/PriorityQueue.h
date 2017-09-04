@@ -144,10 +144,10 @@ bool priorityQueue::updateNodeInQueue(const cgNode & newNode)
 	}
 	else
 	{
-		int currGScore = dataArray[it->second].gScore;
+		double currGScore = dataArray[it->second].gScore;
 		if (currGScore > newNode.gScore)
 		{
-			int hVal = dataArray[it->second].fScore - dataArray[it->second].gScore;
+			double hVal = dataArray[it->second].fScore - dataArray[it->second].gScore;
 			dataArray[it->second].gScore = newNode.gScore;
 			dataArray[it->second].fScore = hVal + newNode.gScore;
 			dataArray[it->second].previous = newNode.previous;

@@ -76,7 +76,7 @@ void DijkstraComputePaths(vertex_t source, vertex_t destination,
 }
 
 // return the shortest path length from source to destination
-int DijkstraComputePaths(vertex_t source, vertex_t destination, const adjacency_list_t &adjacency_list)
+double DijkstraComputePaths(vertex_t source, vertex_t destination, const adjacency_list_t &adjacency_list)
 {
 	std::vector<weight_t> min_distance;
 
