@@ -27,6 +27,8 @@ namespace Globals
 
 	int max_dim = 2;								// the maximum dimension to be computed
 
+	int num_threads = 8;						// the number of threads for computing the edge annotations
+
 	string inputFileName;							// input data file name
 
 	string memoryFileName_HeuristicAlg = "Memory_Footprint_HeuristicAlg.txt";

@@ -23,6 +23,7 @@ void parseCommandLine(int argc, const char* argv[])
 	optionals.addOption("-t", "Threshold", "--threshold");
 	optionals.addOption("-a", "Algorithm to apply: A* Search (0) or Exhaustive Search (1)", "--algorithm");
 	optionals.addOption("-d", "Maximum dimension to be computed", "--dimension");
+	optionals.addOption("-p", "Number of threads", "--pthread");
 	optionals.addOption("-h", "Show info and usage", "--help");
 	cmd.addOptionGroup(optionals);
 
@@ -85,6 +86,18 @@ void parseCommandLine(int argc, const char* argv[])
 		Globals::max_dim = stoi(temp_dim);
 	}
 
+	if (cmd.optionExists("-p") || cmd.optionExists("--pthread"))
+	{
+		std::string temp_num_thread = cmd.getParameter("-p") + cmd.getParameter("--pthread");
+		if (temp_num_thread.empty())
+		{
+			cerr << "Error: please specify the number of threads." << endl;
+			cmd.printHelpMessage("USAGE:");
+			exit(EXIT_FAILURE);
+		}
+		Globals::num_threads = stoi(temp_num_thread);
+	}
+
 	summary();
 }
 
@@ -116,6 +129,7 @@ void summary()
 		}
 
 		cout << "Threshold:  " << Globals::reduction_threshold << endl;
+		cout << "Number of threads: " << Globals::num_threads << endl;
 	}
 	cout << "+++++++++++++++++++++++++++++++++++++++++++++++++" << endl << endl;
 }
