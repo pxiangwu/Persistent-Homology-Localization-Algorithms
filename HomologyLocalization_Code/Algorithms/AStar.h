@@ -9,6 +9,9 @@
 #include <fstream>
 #include <ctime>
 
+#include <unordered_map>
+#include <unordered_set>
+
 #include "../PersistenceIO.h"
 #include "../Algorithms/DijkstraShortestPath.h"
 #include "../Algorithms/AnnotatingEdges.h"
@@ -123,15 +126,18 @@ void AStar_Optimal_Cycle(const MatrixListType & inputCycle, const vector<MatrixL
 	priorityQueue searchQ; // priority queue for A* algorithm
 	searchQ.push(sourceNode);
 
-	map<pair<int, BitSet>, int> computedHeuristics; // given a vertex, we store its already computed shortest path to the target for future usage
-	map<pair<int, BitSet>, int>::const_iterator it_heuristc;
-	multimap<int, BitSet> hasVisited; // a set which records nodes that have been visited
-	pair<multimap<int, BitSet>::iterator, multimap<int, BitSet>::iterator> ret;
+	unordered_map<pair<int, BitSet>, int, KeyHasher> computedHeuristics; // given a vertex, we store its already computed shortest path to the target for future usage
+	unordered_map<pair<int, BitSet>, int, KeyHasher>::const_iterator it_heuristc;
+	unordered_set<pair<int, BitSet>, KeyHasher> hasVisited; // a set which records nodes that have been visited
+	unordered_set<pair<int, BitSet>, KeyHasher>::const_iterator ret;
+
+	vector<unordered_map<int, int>> heuristic_database; // database of dynamically precomputed heuristic
+	for (int i = 0; i < BettiNum; ++i)
+		heuristic_database.push_back(unordered_map<int, int>());
 
 	int cntExpanedNode = 0; // count the number of expaned nodes
-	bool isVisited = false;
 	bool isInOpenSet = false;
-	int lenHeuristicPath = 0;
+	double lenHeuristicPath = 0;
 	BitSet uvTargetAnnotation(BettiNum);
 	pair<int, BitSet> keyH(-1, BitSet(BettiNum)); // search key for heuristics in computedHeuristics
 
@@ -190,10 +196,11 @@ void AStar_Optimal_Cycle(const MatrixListType & inputCycle, const vector<MatrixL
 			else
 			{
 				uvTargetAnnotation = neighborNode.sumAnnotation ^ targetAnnotation;
-				lenHeuristicPath = computeHeuristic(coveringGraphs, uvTargetAnnotation, neighborNode.vertex, target, BettiNum, vertexNum);
+				lenHeuristicPath = computeHeuristic(coveringGraphs, uvTargetAnnotation, 
+					neighborNode.vertex, target, BettiNum, vertexNum, heuristic_database);
 				computedHeuristics[keyH] = lenHeuristicPath;
 			}
-			neighborNode.gScore = currentNode.gScore + 1;
+			neighborNode.gScore = currentNode.gScore + nb.weight;
 			neighborNode.fScore = neighborNode.gScore + lenHeuristicPath;
 
 
@@ -204,17 +211,8 @@ void AStar_Optimal_Cycle(const MatrixListType & inputCycle, const vector<MatrixL
 
 			// -- insert it into priority queue
 			// -- first, check if it is in close set
-			isVisited = false;
-			ret = hasVisited.equal_range(neighborNode.vertex);
-			for (multimap<int, BitSet>::iterator mapIt = ret.first; mapIt != ret.second; ++mapIt)
-			{
-				if (mapIt->second == neighborNode.sumAnnotation)
-				{
-					isVisited = true;
-					break;
-				}
-			}
-			if (isVisited == true) // we have not expanded this node before
+			ret = hasVisited.find(make_pair(neighborNode.vertex, neighborNode.sumAnnotation));
+			if (ret != hasVisited.end()) // we have expanded this node before
 				continue;
 
 			// -- next, check if it is in open set
